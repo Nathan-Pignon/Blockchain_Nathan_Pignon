@@ -8,13 +8,10 @@ class Wallet :
 
     """ Initialisation de la classe """
     def __init__(self):
-        load = self.load()
-        if load == False:
-            self.balance = 0
-            self.history = []
-            self.unique_id = self.generate_unique_id()
-            self.save()
-        
+        self.balance = 0
+        self.history = []
+        self.unique_id = self.generate_unique_id()
+                    
         
     def generate_unique_id(self):
         
@@ -57,6 +54,13 @@ class Wallet :
         pass
     
     
+    def info(self):
+        print("ID : "+str(self.unique_id))
+        print("Balance : "+str(self.balance))
+        print("History : ")
+        print(self.history)
+    
+    
     def save(self):
         """ On rentre les données qui vont être présentes dans le .json """
         data = {
@@ -71,14 +75,12 @@ class Wallet :
         """ Ouverture (création s'il n'existe pas) du fichier avec les droits d'écritures pour sauvegarder les données """
         with open(file, "w") as filename:
             json.dump(data, filename)
+            print("La Wallet "+str(self.unique_id)+" a été créée avec "+str(self.balance)+"€")
             
             
-    def load(self):
-        """ On demande si l'utilisateur veut récupérer un wallet existant """
-        id_wallet = input("Quel est l'id de votre wallet ? (Vide si vous voulez un nouveau Wallet) ")
-        
+    def load(self, id_wallet=None):        
         """ S'il ne met rien cela veut dire que l'on créé un nouveau wallet """
-        if id_wallet != "" and id_wallet != " ":
+        if id_wallet != None and id_wallet != "":
             Verif = False
             """ On liste tous les wallets existants pour comparer les id """
             files_list = [f_list for f_list in listdir("content/wallets/") if isfile(join("content/wallets/", f_list))]
@@ -99,10 +101,13 @@ class Wallet :
                         self.unique_id = data_load['unique_id']
                         self.balance = data_load['balance']
                         self.history = data_load['history']
+                        print("ID : "+str(self.unique_id))
+                        print("Balance : "+str(self.balance))
+                        print("History : ")
+                        print(self.history)
                     Verif = True
             if Verif == False:
-                print("Le Wallet saisi est inexistant")
-                return self.load()
+                return print("Le Wallet saisi est inexistant")
             else:
                 return True
         else:

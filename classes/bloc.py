@@ -7,24 +7,17 @@ import os
 
 class Bloc :
 
-    def __init__(self, base_hash, create):
-        if create == False:
-            load = self.load()
-        else:
-            load = False
-        if load == False:
-            self.base_hash = base_hash
-            self.hash = "test"
-            self.parent_hash = ""
-            self.weight = self.get_weight
-            self.transactions = []
-            if self.check_hash(base_hash):
-                self.save()
-        
+    def __init__(self, parent_hash=None, hash=None, base_hash=None):
+        self.base_hash = base_hash
+        self.hash = hash
+        self.parent_hash = parent_hash
+        self.weight = 0
+        self.transactions = []        
     
     def check_hash(self, base_hash):
         hashed =  hashlib.sha256(base_hash.encode()).hexdigest()
         if hashed[:4] == "0000":
+            self.hash = hashed
             return True
         else:
             return False
@@ -63,12 +56,9 @@ class Bloc :
             json.dump(data, filename)
     
     
-    def load(self):
-        """ On demande si l'utilisateur veut récupérer un bloc existant """
-        id_bloc = input("Quel est le hash de votre bloc ? (Vide si vous voulez un nouveau Bloc) ")
-        
+    def load(self, id_bloc=None):
         """ S'il ne met rien cela veut dire que l'on créé un nouveau bloc """
-        if id_bloc != "" and id_bloc != " ":
+        if id_bloc != None:
             Verif = False
             """ On liste tous les blocs existants pour comparer les hash """
             files = [f for f in listdir("content/blocs/") if isfile(join("content/blocs/", f))]
@@ -94,12 +84,9 @@ class Bloc :
                         self.transactions = data_load['transactions']
                     Verif = True
             if Verif == False:
-                print("Le bloc saisi est inexistant")
-                return self.load()
+                return print("Le bloc saisi est inexistant")
             else:
                 return True
         else:
             return False
     
-
-MyBloc = Bloc("test", False)
