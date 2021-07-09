@@ -31,11 +31,21 @@ class Bloc :
         pass
     
     
+    def info(self):
+        print("Info du Bloc :")
+        print("     Base hash : "+str(self.base_hash))
+        print("     Hash : "+str(self.hash))
+        print("     Parent hash : "+str(self.parent_hash))
+        print("     Weight : "+str(self.weight))
+        print("     Transactions : ")
+        print(self.transactions)
+    
+    
     def get_weight(self):
         """ Chemin du .json qui aura comme nom son id """
         file = "content/blocs/"+str(self.hash)+".json"
         file_size = os.stat(file)
-        return file_size.st_size
+        self.weight = file_size.st_size
     
     
     def save(self):
@@ -54,6 +64,7 @@ class Bloc :
         """ Ouverture (création s'il n'existe pas) du fichier avec les droits d'écritures pour sauvegarder les données """
         with open(file, "w") as filename:
             json.dump(data, filename)
+            return self.hash
     
     
     def load(self, id_bloc=None):

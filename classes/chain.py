@@ -19,7 +19,6 @@ class Chain :
         while not self.verify_hash(hash):
             random_str = ''.join(random.choice(string.ascii_lowercase) for i in range(10))
             hash = hashlib.sha256(random_str.encode()).hexdigest()
-        print(random_str)
         return random_str       
         
         
@@ -35,11 +34,12 @@ class Chain :
         new_block = Bloc(self.blocks[len(self.blocks) - 1].hash,
                           hash_found, self.base_hash)
         if new_block.check_hash(hash_found):
-            print("Le hash est validé")
             self.blocks.append(new_block)
             new_block.save()
             new_block.get_weight()
-            new_block.save()
+            save = new_block.save()
+            print("Le bloc "+save+" a bien été créé")
+            return save
             
         
     def get_block(self, hash):
